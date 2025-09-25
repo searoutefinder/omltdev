@@ -1,0 +1,97 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+         //kill ports
+        {
+            "label": "Kill Ports",
+            "type": "shell",
+            "command": "powershell.exe",
+            "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/.vscode/kill-ports.ps1"],
+            "problemMatcher": []
+          },
+
+        {
+            "label": "Start Client",
+            "type": "shell",
+            "command": "npm run start",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "isBackground": false,
+            "presentation": {
+                "panel": "new"
+            }
+        },
+
+        {
+
+            "label": "Start Server",
+            "type": "shell",
+            "command": "npm run start",
+            "options": {
+                "cwd": "${workspaceFolder}/../server"
+            },
+            "problemMatcher": [],
+            "isBackground": false,
+            "presentation": {
+                "panel": "new"
+            }
+        },
+        //push updates to Vercel
+        {
+            "label": "Git Add, Commit & Push",
+            "type": "shell",
+            "command": "git add . && git commit -m \"${input:commitMessage}\" && git push -u origin master",
+            "problemMatcher": [],
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": ["/C"]
+                }
+            }
+        },
+
+        //start app localy
+        {
+            "label": "Start App Localy",
+            "dependsOn": [
+                "Kill Ports",
+                "Start Server",
+                "Start Client",
+
+            ],
+            "dependsOrder": "parallel",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }, 
+        
+    ], 
+    "inputs": [
+        {
+            "id": "commitMessage",
+            "type": "promptString",
+            "description": "Write your message for commit",
+            "default": "TICKET - "
+        }
+    ]
+}

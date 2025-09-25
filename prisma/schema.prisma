@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+
+
+model Organization {
+  id        String   @id @default(cuid())
+  orgId     String   @unique           // ← AGOL orgId, treba zbog seed-a
+  slug      String?  @unique
+  name      String
+  createdAt DateTime @default(now())
+
+  mapConfigs MapConfig[]
+}
+
+
+
+
+
+model MapConfig {
+  id              String   @id @default(cuid())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // identitet za mapu
+  slug            String
+  orgId           String?      // ← koristi se u compound unique s serviceName+slug
+  serviceName     String?
+
+  // prikaz / UI
+  webMapName      String?
+  owner           String?
+  logoURL         String?
+  contactEmail    String?
+  cityAndState    String?
+  promotion       Boolean  @default(false)
+
+  centerLng       Float
+  centerLat       Float
+  zoom            Float    @default(14)
+  pitch           Float    @default(0)
+  bearing         Float    @default(0)
+  minZoom         Float    @default(10)
+  maxZoom         Float    @default(18)
+  maxPitch        Float    @default(70)
+
+  bboxMinLng      Float?
+  bboxMinLat      Float?
+  bboxMaxLng      Float?
+  bboxMaxLat      Float?
+
+  donationLng     Float?
+  donationLat     Float?
+
+  preserveType    String?
+  description     String?
+  preserveGeojson Json?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  dataRefs        DataRefs?
+  images          Image[]
+
+  @@index([organizationId])
+  @@index([slug])
+  @@unique([orgId, serviceName, slug]) // ← seed koristi where: { orgId_serviceName_slug: {...} }
+}
+
+
+
+model DataRefs {
+  id               String     @id @default(cuid())
+  mapConfigId      String     @unique
+  mapConfig        MapConfig  @relation(fields: [mapConfigId], references: [id], onDelete: Cascade)
+
+  masterTable      String?
+  preserve         String?
+  trails           String?
+  pois             String?
+  trailheads       String?
+  parkingLots      String?
+  distances        String?
+  trailSourceName  String?
+  mainSource      Json?
+}
+
+
+
+model Icon {
+  id         String  @id @default(cuid())
+  type       String
+  code       String  @unique
+  dataLabel  String?
+  url        String
+  mime       String?
+  active     Boolean @default(true)
+
+  @@index([type], map: "icons_type_idx")
+}
+
+
+
+model Image {
+  id           String    @id @default(cuid())
+  mapConfigId  String?
+  mapConfig    MapConfig? @relation(fields: [mapConfigId], references: [id], onDelete: Cascade)
+
+  orgId        String?            // AGOL orgId (npr. TkSpD6kCAXkp8Jk5)
+  serviceName  String?            // npr. LGLC_OMLT
+
+  name         String?
+  url          String
+  tags         Json?
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+
+  @@index([mapConfigId, kind])
+}

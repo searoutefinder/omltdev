@@ -1,0 +1,4 @@
+.custom-popup .mapboxgl-popup-content {
+  padding: 0px !important;
+  max-width:340px !important;
+}

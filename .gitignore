@@ -1,0 +1,69 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+/dist
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+TO-DO.txt
+TO-DO-RISING-ROUTES.txt
+TO-DO-Trail-Maps.txt
+
+dataFrame.txt
+iframe-codes.txt
+# testing
+/coverage
+
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+#TEST folder 
+TEST
+
+# local env files
+# .env*.local
+# .env*.development
+# .env*production
+
+
+#time tracker - colorado routes
+time-tracker.txt
+
+comments-tamas.txt
+
+#prisma 
+generated
+context/providers
